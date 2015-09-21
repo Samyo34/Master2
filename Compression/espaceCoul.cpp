@@ -34,9 +34,18 @@ void agrandir(OCTET* in, OCTET *out, int lignes, int colonnes, int color1, int c
 		for(int j=0;j<colonnes;j++){
 			for(int k=0;k<3;k++){
 				if(i<=lignes/2 && j<=colonnes/2){
-					out[j*colonnes*3+(i*3)+k]=0;
+					if(k == color1 || k == color2){
+						out[j*2*colonnes*3+(i*3*2)+k]=in[j*colonnes*3+(i*3)+k];
+						out[j*2*colonnes*3+(i*3*2)+k+1]=in[j*colonnes*3+(i*3)+k];
+						out[(j+1)*colonnes*3+(i*3)+k]=in[j*colonnes*3+(i*3)+k];
+						out[(j+1)*colonnes*3+(i*3)+k+1]=in[j*colonnes*3+(i*3)+k];
+					}else{
+						out[j*colonnes*3+(i*3)+k]=in[j*colonnes*3+(i*3)+k];
+					}
+
+						
 				}else{
-					out[j*colonnes*3+(i*3)+k]=255;
+					//out[j*colonnes*3+(i*3)+k]=255;
 				}
 			}
 			
