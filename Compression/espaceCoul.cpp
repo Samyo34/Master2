@@ -29,6 +29,10 @@ void reduc(OCTET *in, OCTET *out, int lignes, int colonnes, int color1, int colo
 }
 
 
+void agrandir(OCTET* in, OCTET *out, int lignes, int colonnes, int color1, int color2){
+	
+}
+
 
 
 int main(int argc, char* argv[]){
