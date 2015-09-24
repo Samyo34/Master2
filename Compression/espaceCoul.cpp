@@ -99,7 +99,19 @@ void agrandir(OCTET* in, OCTET *out, int lignes, int colonnes, int color1, int c
 	}
 }
 
-
+float psnr(OCTET* in, OCTET* in2, int lignes, int colonnes){
+	float somme=0;
+	for(int i = 0;i<lignes*3;i++){
+		for(int j=0;j<colonnes*3;j++){
+			for(int k=0;k<3;k++){
+				somme += (in[j*colonnes+i+k]-in2[j*colonnes+i+k])*(in[j*colonnes+i+k]-in2[j*colonnes+i+k]);
+			}
+			
+		}
+	}
+	float eqm = somme/lignes*colonnes*9;
+	return 10*log10(255*255/eqm);
+}
 
 int main(int argc, char* argv[]){
 	char cNomImgLue[250];
@@ -124,6 +136,8 @@ int main(int argc, char* argv[]){
 
 	reduc(ImgIn,ImgOut,lignes,colonnes,0,2);
 	agrandir(ImgOut,ImgOut2,lignes,colonnes,0,2);
+
+	cout<<"PSNR : "<<psnr(ImgIn,ImgOut2,lignes,colonnes)<<endl;
 
 	ecrire_image_ppm(reduction, ImgOut, lignes, colonnes);
 	ecrire_image_ppm(agr, ImgOut2, lignes, colonnes);
