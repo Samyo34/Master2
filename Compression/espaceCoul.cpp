@@ -6,59 +6,30 @@
 using namespace std;
 
 
-int getIndex(int x, int y, int imgW){
-	return y * imgW + x;
-}
 
 void reduc(OCTET *in, OCTET *out, int lignes, int colonnes, int color1, int color2) {
-	/*int index, index2;
-	for(int i = 0; i < lignes; i++){
-		for(int j = 0; j < colonnes; j++){
-			index = getIndex(i * 3, j, lignes*3);
-			for(int k = 0; k < 3; k++){
-				if(k == color1 || k == color2){
-					if(i <= lignes/2 && j <= colonnes/2){
-						out[index+k] = in[getIndex(i * 3 * 2, j * 2, lignes*3)];
-					}else{
-						out[index+k] = 0;
-					}
-				}else{
-					out[index+k] = in[index+k];
-				}
-			}
-		}
-	}*/
-			int ii,jj;
+
+	int ii,jj;
 	float iFl;
 	float jFl;
-	bool b = true;
+	bool b=true;
 
 		for(int i=0;i<lignes;i++){
 		for(int j=0;j<colonnes;j++){
 			for(int k=0;k<3;k++){
-				//if(i<=lignes/2 && j<=colonnes/2){
-				if(b){
+				//if(b){
 					if(k == color1 || k == color2){
 						iFl = (float)i/2.0f;
 						jFl = (float)j/2.0f;
 						ii = (int)std::floor(iFl);
 						jj = (int)std::floor(jFl);
 						out[jj*colonnes*3+(ii*3)+k] = in[j*colonnes*3+(i*3)+k];
-						/*out[j*2*colonnes*3+(i*3*2)+k]=in[j*colonnes*3+(i*3)+k];
-						out[j*2*colonnes*3+(i*3*2)+k+1]=in[j*colonnes*3+(i*3)+k];
-						out[(j+1)*colonnes*3+(i*3)+k]=in[j*colonnes*3+(i*3)+k];
-						out[(j+1)*colonnes*3+(i*3)+k+1]=in[j*colonnes*3+(i*3)+k];*/
 					}else{
 						out[j*colonnes*3+(i*3)+k]=in[j*colonnes*3+(i*3)+k];
 					}
-					b = false;
-				}else{
-					b=true;
-				}
-
-						
+				//	b=false;
 				//}else{
-					//out[j*colonnes*3+(i*3)+k]=255;
+					b=true;
 				//}
 			}
 			
@@ -74,25 +45,15 @@ void agrandir(OCTET* in, OCTET *out, int lignes, int colonnes, int color1, int c
 	for(int i=0;i<lignes;i++){
 		for(int j=0;j<colonnes;j++){
 			for(int k=0;k<3;k++){
-				//if(i<=lignes/2 && j<=colonnes/2){
 					if(k == color1 || k == color2){
-						iFl = (float)i/4.0f;
-						jFl = (float)j/4.0f;
+						iFl = (float)i/2.0f;
+						jFl = (float)j/2.0f;
 						ii = (int)std::floor(iFl);
 						jj = (int)std::floor(jFl);
 						out[j*colonnes*3+(i*3)+k] = in[jj*colonnes*3+(ii*3)+k];
-						/*out[j*2*colonnes*3+(i*3*2)+k]=in[j*colonnes*3+(i*3)+k];
-						out[j*2*colonnes*3+(i*3*2)+k+1]=in[j*colonnes*3+(i*3)+k];
-						out[(j+1)*colonnes*3+(i*3)+k]=in[j*colonnes*3+(i*3)+k];
-						out[(j+1)*colonnes*3+(i*3)+k+1]=in[j*colonnes*3+(i*3)+k];*/
 					}else{
 						out[j*colonnes*3+(i*3)+k]=in[j*colonnes*3+(i*3)+k];
 					}
-
-						
-				//}else{
-					//out[j*colonnes*3+(i*3)+k]=255;
-				//}
 			}
 			
 		}
