@@ -95,8 +95,8 @@ int main(int argc, char* argv[]){
 
 	allocation_tableau(ImgOut2, OCTET, nTaille*3)
 
-	reduc(ImgIn,ImgOut,lignes,colonnes,0,2);
-	agrandir(ImgOut,ImgOut2,lignes,colonnes,0,2);
+	reduc(ImgIn,ImgOut,lignes,colonnes,0,1);
+	agrandir(ImgOut,ImgOut2,lignes,colonnes,0,1);
 
 	cout<<"PSNR : "<<psnr(ImgIn,ImgOut2,lignes,colonnes)<<endl;
 
