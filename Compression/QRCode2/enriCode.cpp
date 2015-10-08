@@ -4,9 +4,14 @@
 #include <iostream>
 #include <cmath>
 
+struct generatrice{
+	int gene[7][4];
+};
 
 class matrix{
 public:
+
+
 	matrix(int width, int height){
 		m = new int*[width];
 		for(int i =0;i<width;i++){
@@ -56,13 +61,83 @@ matrix* mult(matrix* vect){
 				res->set(i,j,res->getFact(this,vect,i,j));
 			}	
 		}
+		generatMatrice();
 		return res;
 	}
 	
 }
+
+void generatMatrice(){
+	this->gene[0][0]=1;
+	this->gene[0][1]=1;
+	this->gene[0][2]=0;
+	this->gene[0][3]=1;
+
+	this->gene[1][0]=1;
+	this->gene[1][1]=0;
+	this->gene[1][2]=1;
+	this->gene[1][3]=1;
+
+	this->gene[2][0]=1;
+	this->gene[2][1]=0;
+	this->gene[2][2]=0;
+	this->gene[2][3]=0;
+
+	this->gene[3][0]=0;
+	this->gene[3][1]=1;
+	this->gene[3][2]=1;
+	this->gene[3][3]=1;
+
+	this->gene[4][0]=0;
+	this->gene[4][1]=1;
+	this->gene[4][2]=0;
+	this->gene[4][3]=0;
+
+	this->gene[5][0]=0;
+	this->gene[5][1]=0;
+	this->gene[5][2]=1;
+	this->gene[5][3]=0;
+
+	this->gene[6][0]=0;
+	this->gene[6][1]=0;
+	this->gene[6][2]=0;
+	this->gene[6][3]=1;
+
+	this->veri[0][0]=0;
+	this->veri[0][1]=0;
+	this->veri[0][2]=0;
+	this->veri[0][3]=1;
+	this->veri[0][4]=1;
+	this->veri[0][5]=1;
+	this->veri[0][6]=1;
+
+	this->veri[1][0]=0;
+	this->veri[1][1]=1;
+	this->veri[1][2]=1;
+	this->veri[1][3]=0;
+	this->veri[1][4]=0;
+	this->veri[1][5]=1;
+	this->veri[1][6]=1;
+
+	this->veri[2][0]=1;
+	this->veri[2][1]=0;
+	this->veri[2][2]=1;
+	this->veri[2][3]=0;
+	this->veri[2][4]=1;
+	this->veri[2][5]=0;
+	this->veri[2][6]=1;
+}
+
+matrix* hamming(matrix*  message){
+	return this->
+}
 private:
 	int** m;
 	int width, height;
+
+	int gene[7][4];
+	int veri[3][7];
+
 
 	int getFact(matrix* m1, matrix* m2,int ligne, int colonne){
 		int somme=0;
@@ -71,6 +146,7 @@ private:
 		}
 		return somme;
 	}
+	
 };
 
 
