@@ -8,6 +8,7 @@
 class matrix{
 public:
 	matrix(int width, int height){
+		m = new int*[width];
 		for(int i =0;i<width;i++){
 			m[i] = new int[height];
 		}
@@ -23,27 +24,53 @@ public:
 		return this->height;
 	}
 
-
-
-
-	matrix* mult(matrix* vect){
-		if(this->getHeight() != vect->getWidth() || this->getWidth() != vect->getHeight()) return -1;
-		matrix* res = new matrix(this->getHeight(), vect->getWidth());
-		int tot = 0;
-		/*  /!\ Ceci est l'ago :  ca ne peux pas fonctionner comme ça (m est private) /!\ */
-		for(int i=0; i<res->getHeight();i++){
-			for(int j=0;j<res->getWidth();j++){
-				for(int x = 0;x<this->getHeight();x++){
-					for(int y=0;y<this->getWidth();y++){
-						res->m[i][j]+=this->m[x][y]*vect->m[y][x];
-					}
-				}
-			}
-		}
+	int at(int i, int j){
+		return this->m[i][j];
 	}
+
+	void set(int i, int j, int val){
+		this->m[i][j]= val;
+		//std::cout<<i<<" "<<j<<" "<<val<<std::endl;
+	}
+
+	void printMat(){
+		for(int i=0;i<this->getWidth();i++){
+			for(int j=0;j<this->getHeight();j++){
+				std::cout<<this->at(i,j)<<" ";
+			}
+			std::cout<<std::endl;
+		}
+
+	}
+
+
+
+matrix* mult(matrix* vect){
+	if(this->getHeight() != vect->getWidth() || this->getWidth() != vect->getHeight()){
+		return NULL;
+	}else{
+		matrix* res = new matrix(this->getWidth(), vect->getHeight());
+		int tot = 0;
+		for(int i=0; i<res->getWidth();i++){
+			for(int j=0;j<res->getHeight();j++){
+				res->set(i,j,res->getFact(this,vect,i,j));
+			}	
+		}
+		return res;
+	}
+	
+}
 private:
 	int** m;
 	int width, height;
+
+	int getFact(matrix* m1, matrix* m2,int ligne, int colonne){
+		int somme=0;
+		for(int i=0;i<m1->getHeight();i++){
+			somme += m1->at(ligne,i) * m2->at(i,colonne);
+		}
+		return somme;
+	}
 };
 
 
@@ -55,7 +82,7 @@ int main(int argc, char* argv[]){
 	char bin2[250] = "binarisationByVote.pgm";
 	char bin3[250] = "binarisationLocal.pgm";
 	int lignes, colonnes, nTaille, S;
-	if (argc != 3) {
+	/*if (argc != 3) {
 		printf("Usage: ImageIn.pgm taille_module\n");
 		exit (1) ;
 	}
@@ -63,22 +90,37 @@ int main(int argc, char* argv[]){
 	sscanf (argv[1],"%s",cNomImgLue);
 	//sscanf (argv[2],"%d",p);
 	OCTET *ImgIn, *ImgOut, *ImgOut2,*ImgOut3;
-	lire_nb_lignes_colonnes_image_pgm(cNomImgLue, &lignes, &colonnes);
+	//lire_nb_lignes_colonnes_image_pgm(cNomImgLue, &lignes, &colonnes);
 	nTaille = lignes * colonnes;
 
-	allocation_tableau(ImgIn, OCTET, nTaille);
+	//allocation_tableau(ImgIn, OCTET, nTaille);
 	lire_image_pgm(cNomImgLue, ImgIn, lignes * colonnes);
 
 	/*allocation_tableau(ImgOut, OCTET, nTaille);
 	allocation_tableau(ImgOut2, OCTET, nTaille);
 	allocation_tableau(ImgOut3,OCTET, nTaille);*/
 	matrix* principale = new matrix(2,3);
-	matrix* vect = new matrix(3,2);
 
+	for(int i=0;i<2;i++){
+		for(int j=0;j<3;j++){
+			principale->set(i,j,i+j);
+		}
+	}
+
+	matrix* vect = new matrix(3,2);
+	for(int i=0;i<3;i++){
+		for(int j=0; j<2;j++){
+			vect->set(i,j,10-(i+j));
+		}
+	}
+	principale->printMat();
+	matrix* res = principale->mult(vect);
+	std::cout<<std::endl;
+	res->printMat();
 
 	/*ecrire_image_pgm(bin, ImgOut, lignes, colonnes);
 	ecrire_image_pgm(bin2, ImgOut2, lignes, colonnes);
 	ecrire_image_pgm(bin3,ImgOut3,lignes,colonnes);*/
-	free(ImgIn);
+	//free(ImgIn);
 	return 1;
 }
