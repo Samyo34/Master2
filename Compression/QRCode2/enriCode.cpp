@@ -144,6 +144,7 @@ matrix* getveri(){
 }
 
 
+
 matrix* hamming(){
 	generatMatrice();
 	if (this->isBinaire()) return this->getGene()->mult(this);
@@ -177,33 +178,153 @@ private:
 	
 };
 
+matrix* createMatModule(int taille){
+	matrix* newMod = new matrix(taille,taille,true);
+	int nbPixNoir =(int) (3*(taille*taille/4));
+	int nbBlanc = taille*taille-nbPixNoir;
+	int cptNoir =0;
+	int cptBlanc = 0;
+	int val;
+	for(int i=0;i<taille;i++){
+		for(int j=0;j<taille;j++){
+			val = rand()%2;
+			if(val ==0){
+				cptNoir++;
+			}else{
+				cptBlanc++;
+			}
+			if(cptNoir>nbPixNoir){
+				val = 1;
+				cptBlanc++;
+			}else if (cptBlanc > nbBlanc){
+				val = 0;
+				cptNoir++;
+			}
+			newMod->set(i,j,val);
+		}
+	}
+	return newMod;
+}
 
+void addModule(OCTET* out, int lignes,int x, int y, int tailleModule){
+	matrix* mod = createMatModule(tailleModule);
+	int cptX=0;
+	int cptY=0;
+	for(int i=x;i<x+tailleModule;i++){
+		cptY=0;
+		for(int j =y;j<y+tailleModule;j++){
+			if(mod->at(cptX,cptY)==0){
+				out[i*lignes+j]=0;
+			}else{
+				out[i*lignes+j]=255;
+			}
+			
+			cptY++;
+		}
+		cptX++;
+	}
+	//std::cout<<"la"<<std::endl;
+}
+
+int addNivStock(OCTET* qrCode, OCTET* out, matrix* code, int lignes, int colonnes, int taille){
+	int cpt=0;
+	std::cout<<code->getWidth()<<std::endl;
+	for(int i=0;i<lignes;i+=taille){
+		for(int j=0;j<colonnes;j+=taille){
+			if((int)qrCode[i*lignes+j] == 0){
+
+				std::cout<<i<<" "<<j<<" "<<(int)qrCode[i*lignes+j]<<" "<<cpt<<" "<<code->at(cpt,0)<<std::endl;
+				if(code->at(cpt,0) == 1){
+					addModule(out,lignes,i,j,taille);
+					//std::cout<<cpt<<std::endl;
+					
+				}
+
+				if(cpt < code->getWidth()-1){
+					cpt++;
+				}else{
+					return 1;
+				}
+				
+			}
+		}
+
+	}
+}
+
+void toNdg(OCTET* in,OCTET* out, int lignes, int colonnes){
+	int cpt =0;
+	float res;
+	for(int i=0; i<lignes*3;i+=3){
+		for(int j=0;j<colonnes*3;j+=3){
+			//res = (in[i*lignes+j]*0.29+in[i*lignes+j+1]*0.59+in[i*lignes+j+2]*0.12);
+			//std::cout<<(int)in[i*lignes+j]<<" "<<(int)in[i*lignes+j+1]<<" "<<(int)in[i*lignes+j+2]<<std::endl;
+			out[cpt++] = (int)(in[i*lignes+j]*0.29+in[i*lignes+j+1]*0.59+in[i*lignes+j+2]*0.12);
+		}
+	}
+}
+
+int max(int val1, int val2){
+	if(val1>=val2){
+		return val1;
+	}else{
+		return val2;
+	}
+}
+
+int min(int val1, int val2){
+	if(val1<=val2){
+		return val1;
+	}else{
+		return val2;
+	}
+}
+
+void assemblage(OCTET* code, OCTET* image, OCTET* out, int lignes, int colonnes){
+	for(int i=0;i<lignes;i++){
+		for(int j=0;j<colonnes;j++){
+				out[i*lignes+j]=max(image[i*lignes+j],code[i*lignes+j]);
+				//out[i*lignes+j]=sqrt(code[i*lignes+j]*code[i*lignes+j]+image[i*lignes+j]*image[i*lignes+j]);				
+		}
+	}
+}
+
+void recopie(OCTET* in, OCTET* out, int lignes, int colonnes){
+	for(int i=0;i<lignes;i++){
+		for(int j=0; j<colonnes; j++){
+			out[i*lignes+j]=in[i*colonnes+j];
+		}
+	}
+}
 
 int main(int argc, char* argv[]){
-	char cNomImgLue[250];
+	char cNomImgLue[250];// logo
+	char cNomImgLue2[250]="Code.pgm";// QRCode
 	int* p;
-	char bin[250] = "binarisation.pgm";
-	char bin2[250] = "binarisationByVote.pgm";
-	char bin3[250] = "binarisationLocal.pgm";
+	char ndg[250] = "ndg.pgm";
+	char bin2[250] = "assemblage.pgm";
+	char bin3[250] = "nivStock.pgm";
 	int lignes, colonnes, nTaille, S;
-	/*if (argc != 3) {
-		printf("Usage: ImageIn.pgm taille_module\n");
+	if (argc != 2) {
+		printf("Usage: Logo.ppm code.pgm\n");
 		exit (1) ;
 	}
-
 	sscanf (argv[1],"%s",cNomImgLue);
-	//sscanf (argv[2],"%d",p);
+	//sscanf (argv[2],"%s",cNomImgLue2);
 	OCTET *ImgIn, *ImgOut, *ImgOut2,*ImgOut3;
-	//lire_nb_lignes_colonnes_image_pgm(cNomImgLue, &lignes, &colonnes);
+	lire_nb_lignes_colonnes_image_pgm(cNomImgLue2, &lignes, &colonnes);
 	nTaille = lignes * colonnes;
+	allocation_tableau(ImgIn, OCTET, nTaille);// logo
+	lire_image_pgm(cNomImgLue2, ImgIn, lignes * colonnes);
 
-	//allocation_tableau(ImgIn, OCTET, nTaille);
-	lire_image_pgm(cNomImgLue, ImgIn, lignes * colonnes);
+	allocation_tableau(ImgOut, OCTET, nTaille);// QRcode
+	//lire_image_pgm(cNomImgLue2,ImgOut,lignes*colonnes); // on suppose que les deux image on la même taille
 
-	/*allocation_tableau(ImgOut, OCTET, nTaille);
-	allocation_tableau(ImgOut2, OCTET, nTaille);
-	allocation_tableau(ImgOut3,OCTET, nTaille);*/
-	/*matrix* principale = new matrix(2,3,false);
+	allocation_tableau(ImgOut2, OCTET, nTaille);// image de sortie
+	allocation_tableau(ImgOut3,OCTET, nTaille);// ImgOut3 va stocker ImgIn en ndg*/
+
+	/* Question 1.1 
+	matrix* principale = new matrix(2,3,false);
 
 	for(int i=0;i<2;i++){
 		for(int j=0;j<3;j++){
@@ -217,23 +338,42 @@ int main(int argc, char* argv[]){
 			vect->set(i,j,10-(i+j));
 		}
 	}
+	std::cout<<"Matrice principale :"<<std::endl;
 	principale->printMat();
+	std::cout<<"Vecteur :"<<std::endl;
+	vect->printMat();
 	matrix* res = principale->mult(vect);
 	std::cout<<std::endl;
+	std::cout<<"Resultat de la multiplication :"<<std::endl;
 	res->printMat();*/
-
-	matrix* message = new matrix(4,1,true);
+	/* Question 1.2 */
+	matrix* message = new matrix(7,1,true);
 	matrix* code;
 	message->set(0,0,1);
 	message->set(1,0,0);
 	message->set(2,0,1);
 	message->set(3,0,1);
+	message->set(4,0,0);
+	message->set(5,0,0);
+	message->set(6,0,1);
+	/*std::cout<<"Message a encoder :"<<std::endl;
+	message->printMat();
 
 	code = message->hamming();
-	code->printMat();
-	/*ecrire_image_pgm(bin, ImgOut, lignes, colonnes);
-	ecrire_image_pgm(bin2, ImgOut2, lignes, colonnes);
-	ecrire_image_pgm(bin3,ImgOut3,lignes,colonnes);*/
+	std::cout<<"\nResultat de l'encodage"<<std::endl;
+	code->printMat();*/
+
+	/*Question 2.1 */
+	recopie(ImgIn, ImgOut, lignes, colonnes);
+	addNivStock(ImgIn,ImgOut,message,lignes,colonnes,7);
+	 /* Question 3
+	toNdg(ImgIn,ImgOut3, lignes,colonnes);
+	assemblage(ImgOut,ImgOut3,ImgOut2,lignes,colonnes);*/
+
+
+	ecrire_image_pgm(bin3, ImgOut, lignes, colonnes);
+	//ecrire_image_pgm(bin2, ImgOut2, lignes, colonnes);
+	/*ecrire_image_pgm(bin3,ImgOut3,lignes,colonnes);*/
 	//free(ImgIn);
 	return 1;
 }

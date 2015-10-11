@@ -177,7 +177,7 @@ int main(int argc, char* argv[]){
 	int max = getMax(ImgIn,lignes,colonnes);
 
 	binarisation(ImgIn,ImgOut,lignes,colonnes,min,max);
-	binarisationByVote(ImgIn,ImgOut2,lignes,colonnes,min,max,9);
+	binarisationByVote(ImgIn,ImgOut2,lignes,colonnes,min,max,7);
 	binarisationLocal(ImgIn, ImgOut3,lignes,colonnes,7);
 
 	ecrire_image_pgm(bin, ImgOut, lignes, colonnes);
