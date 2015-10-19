@@ -91,7 +91,7 @@ void GenerateCodes(const INode* node, const HuffCode& prefix, HuffCodeMap& outCo
     }
 }
  
-int main()
+/*int main()
 {
     // Build frequency table
     int frequencies[UniqueSymbols] = {0};
@@ -113,4 +113,4 @@ int main()
         std::cout << std::endl;
     }
     return 0;
-}
+}*/

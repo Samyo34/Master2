@@ -3,6 +3,9 @@
 #include <stdlib.h>
 #include <iostream>
 #include <cmath>
+#include <vector>
+#include <stack>
+#include "huffman.c"
 
 void toNdg(OCTET* in,OCTET* out, int lignes, int colonnes){
 	int cpt =0;
@@ -32,8 +35,19 @@ int* histo(OCTET* in, int lignes, int colonnes){
 
 void afficheTab(int* tab, int size){
 	for(int i=0;i<size;i++){
-		std::cout<<i<<" "<<tab[i]<<std::endl;
+		std::cout<<i<<" "<<tab[i]<<";";
 	}
+	std::cout<<std::endl;
+}
+
+char toChar(std::stack<bool> *vec) {
+	char c = 0;
+	for (int i = 0; i < 8; i++) {
+		if(vec->top()) c += pow(2, 7 - i);
+		vec->pop();
+	}
+  // vec->erase(vec->begin(), vec->begin() + 8);
+	return c;
 }
 
 
@@ -60,6 +74,32 @@ int main(int argc, char* argv[]){
 	int* histogramme;
 	histogramme = histo(ImgOut,lignes,colonnes);
 	afficheTab(histogramme,256);
+
+	int frequencies[UniqueSymbols] = {0};
+
+	for (int i = 0; i < lignes; i++) {
+		for (int j = 0; j < colonnes; j++) {
+			frequencies[ImgOut[i*lignes+j]]++;
+		}
+	}
+	INode* root = BuildTree(frequencies);
+
+	HuffCodeMap codes;
+	GenerateCodes(root, HuffCode(), codes);
+	delete root;
+
+	std::stack<bool> *vec = new std::stack<bool>();
+	for (int i = 0; i < lignes; i++) {
+		for (int j = 0; j < colonnes; j++) {
+			HuffCode c = codes.find(ImgOut[i*lignes+j])->second;
+			std::for_each(c.begin(), c.end(), [=](bool b) {
+				vec->push(b);
+			});
+			if(vec->size() > 8) {
+				std::cout << toChar(vec);
+			}
+		}
+	}
 
 	ecrire_image_pgm(cNomImgLue2, ImgOut, lignes, colonnes);
 
