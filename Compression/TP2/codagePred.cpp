@@ -73,7 +73,7 @@ int main(int argc, char* argv[]){
 	toNdg(ImgIn,ImgOut, lignes, colonnes);
 	int* histogramme;
 	histogramme = histo(ImgOut,lignes,colonnes);
-	afficheTab(histogramme,256);
+	//afficheTab(histogramme,256);
 
 	int frequencies[UniqueSymbols] = {0};
 
