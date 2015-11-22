@@ -106,7 +106,7 @@ void Maillage::ecrireMaillage(char *fileName)
         out << sphere.size() << " "<< maille.size()<< " 0"<<"\n";
         for(int i = 0 ;i<sphere.size();i++){
             Point* p = sphere.at(i)->convCart();
-            out<< p->getX() << " " << p->getY()<< " " << p->getZ() << "\n";
+            out<<(float) p->getX() << " " <<(float) p->getY()<< " " <<(float) p->getZ() << "\n";
         }
 
         for(int i = 0 ;i<maille.size();i++){
