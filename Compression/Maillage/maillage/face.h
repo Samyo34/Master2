@@ -13,6 +13,9 @@ private:
 public:
     Face();
     Face(Point* a, Point* b, Point* c);
+    Point* getPointA();
+    Point* getPointB();
+    Point* getPointC();
 };
 
 #endif // FACE_H

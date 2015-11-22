@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>triceratops.off</file>
+        <file>buddha.off</file>
+        <file>bunny.off</file>
+    </qresource>
+</RCC>
