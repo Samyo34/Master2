@@ -16,7 +16,7 @@ PointSpherique::PointSpherique(Point *p, Point *pointG)
 {
     this->dist = sqrt(pow((p->getX() - pointG->getX()),2) + pow((p->getY()-pointG->getY()),2) + pow((p->getZ()-pointG->getZ()),2));
 
-    this->angleA = atan((p->getY()-pointG->getY())/(p->getX()-pointG->getX()));
+    this->angleA = atan2((p->getX()-pointG->getX()),(p->getY()-pointG->getY()));
 
     this->angleB = acos((p->getZ()-pointG->getZ())/this->dist);
 
@@ -24,8 +24,8 @@ PointSpherique::PointSpherique(Point *p, Point *pointG)
 
 Point *PointSpherique::convCart()
 {
-    return new Point(this->dist*sin(this->angleB)*cos(this->angleA),
-                     this->dist*sin(this->angleB)*sin(this->angleA),
+    return new Point(this->dist*sin(this->angleB)*sin(this->angleA),
+                     this->dist*sin(this->angleB)*cos(this->angleA),
                      this->dist*cos(this->angleB));
 }
 
